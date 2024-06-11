@@ -9,6 +9,6 @@ router = Router()
 async def start(message: Message):
     await message.answer(
         f"Hello, {message.from_user.full_name}! I'll tell you when to buy or sell crypto, "
-        f"to add coin type /add coin_symbol and to delete it use /delete coin_symbol \n"
-        f"for example: /add BTC, /delete ETH (Any cases are allowed)"
+        f"to add coin type /add coin_symbol\n"
+        f"for example: /add BTC (Any cases are allowed)"
     )
