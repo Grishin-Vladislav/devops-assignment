@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+
+  db:
+    container_name: postgres_db
+    image: postgres:16-alpine
+    user: postgres
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASS}
+      POSTGRES_DB: ${PG_NAME}
+    networks:
+      - coinbase-network
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 5s
+      retries: 5
+
+  bot:
+    container_name: coinbase-bot
+    build: .
+    command: python src/bot.py
+    env_file:
+      - .env
+    networks:
+      - coinbase-network
+    restart: unless-stopped
+    depends_on: 
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  coinbase-network:
+    driver: bridge
